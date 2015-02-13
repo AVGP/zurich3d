@@ -31,14 +31,14 @@ module.exports = (function() {
     hammertime.on('pinchmove', function(e) {
       if(e.scale >= 1.0 && camera.position.z <= minZ) return;
 
-      camera.position.z += (1 - e.scale) / 2;
+      camera.position.z += (1 - e.scale) * 2;
       wasMoved = true;
     });
 
     document.body.addEventListener('wheel', function(e) {
       if(e.wheelDelta) { // Chrome
         if(e.wheelDelta > 0 && camera.position.z <= minZ) return;
-        camera.position.z -= e.wheelDelta / 120;
+        camera.position.z -= e.wheelDelta / 12;
       } else if(e.deltaY) { // Firefox / IE
         if(e.deltaY < 0 && camera.position.z <= minZ) return;
         camera.position.z += Math.max(Math.min(e.deltaY, 5), -5);
