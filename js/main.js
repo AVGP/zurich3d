@@ -33,7 +33,12 @@ xhr.onload = function() {
     for ( var i = 0, j = 0, l = vertices.length; i < l; i ++, j += 3 ) {
       vertices[ j + 1 ] = blocks[b][ i ] - 400;
     }
-    var terrain = new THREE.Mesh(geometry, material);
+
+    if(window.location.hash == "#quilted") {
+      var mat = material.clone();
+      mat.color.setRGB(Math.random(), Math.random(), Math.random());
+      var terrain = new THREE.Mesh(geometry, mat);
+    } else var terrain = new THREE.Mesh(geometry, material);
     terrain.scale.set(2,2,2);
     terrain.position.set((b%8) * 250 - 1000, 0, Math.floor(b/8) * 250 - 1000);
     World.add(terrain);
