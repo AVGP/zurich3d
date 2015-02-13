@@ -18,6 +18,24 @@
       display: none;
     }
 
+    footer {
+      z-index: 5;
+      position: absolute;
+      bottom: 0;
+      color: #fff;
+      background-color: rgb(0, 0, 0);
+      background-color: rgba(0, 0, 0, 0.5);
+      padding: 0.2em;
+    }
+
+    footer a {
+      color: #aaf;
+    }
+
+    footer a:visited {
+      color: #88f;
+    }
+
     #loading {
       position: absolute;
       z-index: 10;
@@ -34,6 +52,7 @@
       <img src="loading.gif" alt="Loading data... this may take some time!" />
       <h2>It's huge, be patient please :)</h2>
     </div>
+    <footer>Based on data from <a href="http://www.are.zh.ch/internet/baudirektion/are/de/aktuell/mitteilungen/gis/2015/hoehendatenzh.html">Geodaten © GIS-ZH</a></footer>
     <script src="http://hammerjs.github.io/dist/hammer.min.js"></script>
     <script src="app.js"></script>
   </body>
