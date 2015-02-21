@@ -1,5 +1,6 @@
 var World = require('three-world'),
     THREE = require('three'),
+    Leap  = require('leapjs'),
     Controls = require('./kinetic-controls');
 
 var worldWidth = 256, worldDepth = 256;
@@ -19,7 +20,8 @@ World.add(anchor);
 
 Controls.init(cam, anchor, 0);
 
-var material = new THREE.MeshLambertMaterial();
+var material = new THREE.MeshLambertMaterial(),
+    terrain  = new THREE.Object3D();
 
 var xhr = new XMLHttpRequest();
 xhr.onload = function() {
@@ -37,13 +39,21 @@ xhr.onload = function() {
     if(window.location.hash == "#quilted") {
       var mat = material.clone();
       mat.color.setRGB(Math.random(), Math.random(), Math.random());
-      var terrain = new THREE.Mesh(geometry, mat);
-    } else var terrain = new THREE.Mesh(geometry, material);
-    terrain.scale.set(2,2,2);
-    terrain.position.set((b%8) * 250 - 1000, 0, Math.floor(b/8) * 250 - 1000);
-    World.add(terrain);
+      var terrainTile = new THREE.Mesh(geometry, mat);
+    } else {
+      var terrainTile = new THREE.Mesh(geometry, material);
+    }
+
+    terrainTile.scale.set(2,2,2);
+    terrainTile.position.set((b%8) * 250 - 1000, 0, Math.floor(b/8) * 250 - 1000);
+
+    terrain.add(terrainTile);
   }
+
+  World.add(terrain);
+
   console.log('Ready');
+
   var loader = document.getElementById('loading');
   loader.parentNode.removeChild(loader);
   World.getRenderer().domElement.style.display = 'block';
@@ -52,3 +62,23 @@ xhr.open('get', 'data.json', true);
 xhr.send();
 
 World.start();
+
+var previousHandPos = null;
+
+Leap.loop(function(frame){
+  if(frame.hands.length > 0) {
+    var hand = frame.hands[0];
+    if(hand.pinchStrength < 0.75) {
+      previousHandPos = null;
+    } else {
+      if(previousHandPos === null) {
+        previousHandPos = hand.palmPosition;
+      }
+
+      terrain.position.x += (hand.palmPosition[0] - previousHandPos[0]);
+      terrain.position.y += (hand.palmPosition[1] - previousHandPos[1]);
+      terrain.position.z += (hand.palmPosition[2] - previousHandPos[2]);
+      previousHandPos = hand.palmPosition;
+    }
+  }
+});
