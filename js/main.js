@@ -65,7 +65,8 @@ World.start();
 
 var previousHandPos = null, previousRotation = null;
 
-var Z_AXIS_VECTOR = new THREE.Vector3(0, 0, 1);
+var Z_AXIS_VECTOR = new THREE.Vector3(0, 0, 1),
+    directionVector = new THREE.Vector3();
 
 Leap.loop(function(frame){
   if(frame.hands.length > 0) {
@@ -74,7 +75,8 @@ Leap.loop(function(frame){
       previousHandPos  = null;
       previousRotation = null;
     } else {
-      var handDirectionVector = new THREE.Vector3(
+
+      directionVector.set(
         hand.direction[0],
         hand.direction[1],
         hand.direction[2]
@@ -85,14 +87,14 @@ Leap.loop(function(frame){
       }
 
       if(previousRotation === null) {
-        previousRotation = Z_AXIS_VECTOR.angleTo(handDirectionVector);
+        previousRotation = Z_AXIS_VECTOR.angleTo(directionVector) / 10;
       }
 
       terrain.position.x += (hand.palmPosition[0] - previousHandPos[0]);
       terrain.position.y += (hand.palmPosition[1] - previousHandPos[1]);
       terrain.position.z += (hand.palmPosition[2] - previousHandPos[2]);
 
-      var angle = Z_AXIS_VECTOR.angleTo(handDirectionVector);
+      var angle = Z_AXIS_VECTOR.angleTo(directionVector) / 10;
       terrain.rotation.y += angle - previousRotation;
 
       previousHandPos  = hand.palmPosition;
